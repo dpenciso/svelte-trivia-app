@@ -4,27 +4,26 @@
   const apiUrl = "https://opentdb.com/api.php?amount=10";
   let questions = [];
   let categories = [];
-  let uniqueCategories = new Set(categories);
-
+  let uniqueCategories = [];
   onMount(async function () {
     const response = await fetch(apiUrl);
     let fullData = await response.json();
 
     questions = fullData.results;
 
-
     questions.forEach((question) => {
       categories.push(question.category);
     });
 
-    console.log(uniqueCategories);
+    uniqueCategories = categories.filter(
+      (item, i, ar) => ar.indexOf(item) === i
+    );
 
-	let answers = []
-	questions.forEach((question) => {
-		answers.push(question.correct_answer)
-		answers.push(question.incorrect_answers)
-	})
-	console.log(answers)
+    let answers = [];
+    questions.forEach((question) => {
+      answers.push(question.correct_answer);
+      answers.push(question.incorrect_answers);
+    });
   });
 </script>
 
@@ -42,46 +41,25 @@
     <h2>Choose your Category</h2>
     <div>
       <select name="category" id="category">
-        <option value="all">All</option>
-        <option value="all">Animals</option>
-        <option value="all">Art</option>
-        <option value="all">Celebrities</option>
-        <option value="all">Entertainment: Books</option>
-        <option value="all">Entertainment: Board Games</option>
-        <option value="all">Entertainment: Cartoon & Animations</option>
-        <option value="all">Entertainments: Comics</option>
-        <option value="all">Entertainment: Film</option>
-        <option value="all">Entertainment: Japanese Anime & Manga</option>
-        <option value="all">Entertainment: Music</option>
-        <option value="all">Entertainment: Musicals & Theatres</option>
-        <option value="all">Entertainment: Television</option>
-        <option value="all">Entertainment: Video Games</option>
-        <option value="all">General Knowledge</option>
-        <option value="all">Geography</option>
-        <option value="all">History</option>
-        <option value="all">Mythology</option>
-        <option value="all">Politics</option>
-        <option value="all">Science: Computers</option>
-        <option value="all">Science: Gadgets</option>
-        <option value="all">Science: Mathematics</option>
-        <option value="all">Science & Nature</option>
-        <option value="all">Sports</option>
-        <option value="all">Vehicles</option>
+        {#each uniqueCategories as category}
+          <option value={category}>{category}</option>
+        {/each}
       </select>
     </div>
   </div>
 
   {#each questions as question}
-    {#if question.question.includes("&quot;")}
-      <h3>{question.question.replaceAll("&quot;", "'")}</h3>
-    {:else if question.question.includes("&#039;")}
-      <h3>{question.question.replaceAll("&#039;", "'")}</h3>
-    {:else if question.question.includes("&ldquo;")}
-      <h3>{question.question.replaceAll("&ldquo;", "'")}</h3>
-    {:else if question.question.includes("&rsquo;")}
-      <h3>{question.question.replaceAll("&rsquo;", "'")}</h3>
+    {#if question.question.includes("&quot;") || question.question.includes("&#039;") || question.question.includes("&ldquo;") || question.question.includes("&rsquo;") || question.question.includes("&minus;")}
+      <h3>
+        {question.question
+          .replaceAll("&quot;", "'")
+          .replaceAll("&#039;", "'")
+          .replaceAll("&ldquo;", "'")
+          .replaceAll("&rsquo;", "'")
+          .replaceAll("&minus;", "-")}
+      </h3>
     {:else}
-      <h3>{question.question} {question.category}</h3>
+      <h3>{question.question}</h3>
     {/if}
   {/each}
 </main>
