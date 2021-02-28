@@ -43,17 +43,12 @@
   let incorrectScore = 0;
   let correctScore = 0;
 
-  const answerDiv = document.querySelector(".answers");
-
   function incorrectAnswer() {
     incorrectScore++;
-    answerDiv.setAttribute("disabled", "");
-    console.log("hi");
   }
 
   function correctAnswer() {
     correctScore++;
-    answerDiv.setAttribute("disabled", "");
   }
 </script>
 
@@ -182,10 +177,6 @@
     margin: 1rem auto;
     width: 50%;
   }
-
-  /* .quiz {
-    display: none;
-  } */
 
   @media (min-width: 640px) {
     main {
